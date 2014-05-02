@@ -1,0 +1,53 @@
+import os
+import sys
+import platform
+
+def CPUinfo():
+# infofile on Linux machines:
+  infofile = "/proc/cpuinfo"
+  cpuinfo = {}
+  if os.path.isfile(infofile):
+    f = open(infofile, 'r')
+    for line in f:
+      try:
+        name, value = [w.strip() for w in line.split(':')]
+      except:
+        continue
+      if name == 'model name':
+        cpuinfo['CPU type'] = value
+      elif name == 'cache size':
+        cpuinfo['cache size'] = value
+      elif name == 'cpu MHz':
+        cpuinfo['CPU speed'] = value + ' Hz'
+      elif name == 'vendor_id':
+        cpuinfo['vendor ID'] = value
+  f.close()
+  return cpuinfo
+
+if __name__ == "__main__":
+  softinfo=SOFTinfo()
+  for keys in softinfo.keys():
+    print softinfo[keys]
+    
+  cpuinfo=CPUinfo()
+  for keys in cpuinfo.keys():
+    print CPUinfo()
+  
+  print "Introduzca el nombre del fichero para almacenar los resultados:"
+  nombre_fichero= raw_input();
+  fichero=open(nombre_fichero, "w")
+  
+  for keys in softinfo.keys():
+    if type (softinfo[keys]) is list:
+      fichero.write('\n'.join(softinfo[keys]))
+    else:
+      fichero.write(str(softinfo[keys]))
+      fichero.write('\n')
+      
+  for keys in cpuinfo.keys():
+    if type (cpuinfo[keys]) is list:
+      fichero.write('\n'.join(cpuinfo[keys]))
+    else:
+      fichero.write(str(cpuinfo[keys]))
+      fichero.write('\n')
+  fichero.close()
